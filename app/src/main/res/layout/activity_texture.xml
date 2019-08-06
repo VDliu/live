@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
-    <pictrue.com.reiniot.live.lgglsurfaceview.MySurfaceView
+    <pictrue.com.reiniot.live.texture.GlTextureSurfaceView
         android:id="@+id/surface"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

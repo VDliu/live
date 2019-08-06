@@ -1,4 +1,4 @@
-package pictrue.com.reiniot.live;
+package pictrue.com.reiniot.live.activity;
 
 import android.opengl.GLES20;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import pictrue.com.reiniot.live.R;
 import pictrue.com.reiniot.live.gl.LgEglHelper;
 
 public class MainActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package pictrue.com.reiniot.live.work;
+package pictrue.com.reiniot.live.lgglsurfaceview;
 
 import android.opengl.GLES20;
 import android.util.Log;
