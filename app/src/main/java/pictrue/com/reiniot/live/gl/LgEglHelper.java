@@ -1,5 +1,6 @@
 package pictrue.com.reiniot.live.gl;
 
+import android.opengl.EGL14;
 import android.view.Surface;
 
 import javax.microedition.khronos.egl.EGL10;
@@ -66,12 +67,16 @@ public class LgEglHelper {
             throw new IllegalArgumentException("eglChooseConfig#2 failed");
         }
 
+        //设置版本号为2
+        int[] attrib_list = {EGL14.EGL_CONTEXT_CLIENT_VERSION, 2,
+                EGL10.EGL_NONE};
+
         //6 初始化eglContext,如果外面的eglcontext不为空
         if (eglContext != null) {
-            mEglContext = mEgl.eglCreateContext(mEglDisplay, configs[0], eglContext, null);
+            mEglContext = mEgl.eglCreateContext(mEglDisplay, configs[0], eglContext, attrib_list);
         } else {
             //外面的egl为空创建新的
-            mEglContext = mEgl.eglCreateContext(mEglDisplay, configs[0], EGL10.EGL_NO_CONTEXT, null);
+            mEglContext = mEgl.eglCreateContext(mEglDisplay, configs[0], EGL10.EGL_NO_CONTEXT, attrib_list);
         }
 
         //7 创建EGLSurface
