@@ -1,21 +1,21 @@
-package pictrue.com.reiniot.live.activity;
+package com.ywl5320.openglesegl;
 
 import android.opengl.GLES20;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import pictrue.com.reiniot.live.R;
-import pictrue.com.reiniot.live.gl.LgEglHelper;
 
 public class MainActivity extends AppCompatActivity {
+
+    private SurfaceView surfaceView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SurfaceView surfaceView = findViewById(R.id.surface);
+        surfaceView = findViewById(R.id.surfaceview);
 
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
@@ -25,21 +25,21 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void surfaceChanged(final SurfaceHolder holder, int format, final int width, final int height) {
-                new Thread() {
+
+                new Thread(){
                     @Override
                     public void run() {
                         super.run();
+                        EglHelper eglHelper = new EglHelper();
+                        eglHelper.initEgl(holder.getSurface(), null);
 
-                        LgEglHelper helper = new LgEglHelper();
-                        helper.initEgl(holder.getSurface(), null);
-
-                        while (true) {
-
+                        while(true)
+                        {
                             GLES20.glViewport(0, 0, width, height);
 
                             GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-                            GLES20.glClearColor(0,1,0,1);
-                            helper.swapBuffers();
+                            GLES20.glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
+                            eglHelper.swapBuffers();
 
                             try {
                                 Thread.sleep(16);
@@ -50,11 +50,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }.start();
 
+
             }
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-
+                //egl.destroy
             }
         });
 
