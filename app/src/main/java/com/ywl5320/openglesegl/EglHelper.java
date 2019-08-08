@@ -16,8 +16,7 @@ public class EglHelper {
     private EGLContext mEglContext;
     private EGLSurface mEglSurface;
 
-    public void initEgl(Surface surface, EGLContext eglContext)
-    {
+    public void initEgl(Surface surface, EGLContext eglContext) {
 
         //1、
         mEgl = (EGL10) EGLContext.getEGL();
@@ -30,12 +29,12 @@ public class EglHelper {
 
         //3、
         int[] version = new int[2];
-        if(!mEgl.eglInitialize(mEglDisplay, version)) {
+        if (!mEgl.eglInitialize(mEglDisplay, version)) {
             throw new RuntimeException("eglInitialize failed");
         }
 
         //4、
-        int [] attrbutes = new int[]{
+        int[] attrbutes = new int[]{
                 EGL10.EGL_RED_SIZE, 8,
                 EGL10.EGL_GREEN_SIZE, 8,
                 EGL10.EGL_BLUE_SIZE, 8,
@@ -46,8 +45,7 @@ public class EglHelper {
                 EGL10.EGL_NONE};
 
         int[] num_config = new int[1];
-        if(!mEgl.eglChooseConfig(mEglDisplay, attrbutes, null, 1, num_config))
-        {
+        if (!mEgl.eglChooseConfig(mEglDisplay, attrbutes, null, 1, num_config)) {
             throw new IllegalArgumentException("eglChooseConfig failed");
         }
 
@@ -71,12 +69,9 @@ public class EglHelper {
                 EGL10.EGL_NONE
         };
 
-        if(eglContext != null)
-        {
+        if (eglContext != null) {
             mEglContext = mEgl.eglCreateContext(mEglDisplay, configs[0], eglContext, attrib_list);
-        }
-        else
-        {
+        } else {//如果外部没有传入eglcontext自己新建一个
             mEglContext = mEgl.eglCreateContext(mEglDisplay, configs[0], EGL10.EGL_NO_CONTEXT, attrib_list);
         }
 
@@ -84,32 +79,25 @@ public class EglHelper {
         mEglSurface = mEgl.eglCreateWindowSurface(mEglDisplay, configs[0], surface, null);
 
         //8、
-        if(!mEgl.eglMakeCurrent(mEglDisplay, mEglSurface, mEglSurface, mEglContext))
-        {
+        if (!mEgl.eglMakeCurrent(mEglDisplay, mEglSurface, mEglSurface, mEglContext)) {
             throw new RuntimeException("eglMakeCurrent fail");
         }
     }
 
-    public boolean swapBuffers()
-    {
-        if(mEgl != null)
-        {
+    public boolean swapBuffers() {
+        if (mEgl != null) {
             return mEgl.eglSwapBuffers(mEglDisplay, mEglSurface);
-        }
-        else
-        {
+        } else {
             throw new RuntimeException("egl is null");
         }
     }
 
     public EGLContext getmEglContext() {
-         return mEglContext;
+        return mEglContext;
     }
 
-    public void destoryEgl()
-    {
-        if(mEgl != null)
-        {
+    public void destoryEgl() {
+        if (mEgl != null) {
             mEgl.eglMakeCurrent(mEglDisplay, EGL10.EGL_NO_SURFACE,
                     EGL10.EGL_NO_SURFACE,
                     EGL10.EGL_NO_CONTEXT);

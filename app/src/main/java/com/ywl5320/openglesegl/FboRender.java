@@ -21,10 +21,10 @@ public class FboRender {
     private FloatBuffer vertexBuffer;
 
     private float[] fragmentData = {
-            0f, 1f,
-            1f, 1f,
             0f, 0f,
-            1f, 0f
+            1f, 0f,
+            0f, 1f,
+            1f, 1f
 
     };
 

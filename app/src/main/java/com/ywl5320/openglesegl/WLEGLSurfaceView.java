@@ -10,7 +10,7 @@ import java.lang.ref.WeakReference;
 
 import javax.microedition.khronos.egl.EGLContext;
 
-public abstract class WLEGLSurfaceView extends SurfaceView implements SurfaceHolder.Callback{
+public abstract class WLEGLSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
 
     private Surface surface;
@@ -44,32 +44,26 @@ public abstract class WLEGLSurfaceView extends SurfaceView implements SurfaceHol
 
     public void setRenderMode(int mRenderMode) {
 
-        if(wlGLRender == null)
-        {
-            throw  new RuntimeException("must set render before");
+        if (wlGLRender == null) {
+            throw new RuntimeException("must set render before");
         }
         this.mRenderMode = mRenderMode;
     }
 
-    public void setSurfaceAndEglContext(Surface surface, EGLContext eglContext)
-    {
+    public void setSurfaceAndEglContext(Surface surface, EGLContext eglContext) {
         this.surface = surface;
         this.eglContext = eglContext;
     }
 
-    public EGLContext getEglContext()
-    {
-        if(wlEGLThread != null)
-        {
+    public EGLContext getEglContext() {
+        if (wlEGLThread != null) {
             return wlEGLThread.getEglContext();
         }
         return null;
     }
 
-    public void requestRender()
-    {
-        if(wlEGLThread != null)
-        {
+    public void requestRender() {
+        if (wlEGLThread != null) {
             wlEGLThread.requestRender();
         }
     }
@@ -77,8 +71,7 @@ public abstract class WLEGLSurfaceView extends SurfaceView implements SurfaceHol
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        if(surface == null)
-        {
+        if (surface == null) {
             surface = holder.getSurface();
         }
         wlEGLThread = new WlEGLThread(new WeakReference<WLEGLSurfaceView>(this));
@@ -103,15 +96,16 @@ public abstract class WLEGLSurfaceView extends SurfaceView implements SurfaceHol
         eglContext = null;
     }
 
-    public interface WlGLRender
-    {
+    public interface WlGLRender {
         void onSurfaceCreated();
+
         void onSurfaceChanged(int width, int height);
+
         void onDrawFrame();
     }
 
 
-    static class WlEGLThread extends Thread{
+    static class WlEGLThread extends Thread {
 
         private WeakReference<WLEGLSurfaceView> wleglSurfaceViewWeakReference;
         private EglHelper eglHelper = null;
@@ -138,39 +132,30 @@ public abstract class WLEGLSurfaceView extends SurfaceView implements SurfaceHol
             eglHelper = new EglHelper();
             eglHelper.initEgl(wleglSurfaceViewWeakReference.get().surface, wleglSurfaceViewWeakReference.get().eglContext);
 
-            while (true)
-            {
-                if(isExit)
-                {
+            while (true) {
+                if (isExit) {
                     //释放资源
                     release();
                     break;
                 }
 
-                if(isStart)
-                {
-                    if(wleglSurfaceViewWeakReference.get().mRenderMode == RENDERMODE_WHEN_DIRTY)
-                    {
-                        synchronized (object)
-                        {
+                if (isStart) {
+                    if (wleglSurfaceViewWeakReference.get().mRenderMode == RENDERMODE_WHEN_DIRTY) {
+                        synchronized (object) {
                             try {
                                 object.wait();
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
-                    }
-                    else if(wleglSurfaceViewWeakReference.get().mRenderMode == RENDERMODE_CONTINUOUSLY)
-                    {
+                    } else if (wleglSurfaceViewWeakReference.get().mRenderMode == RENDERMODE_CONTINUOUSLY) {
                         try {
                             Thread.sleep(1000 / 60);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                    }
-                    else
-                    {
-                        throw  new RuntimeException("mRenderMode is wrong value");
+                    } else {
+                        throw new RuntimeException("mRenderMode is wrong value");
                     }
                 }
 
@@ -187,31 +172,24 @@ public abstract class WLEGLSurfaceView extends SurfaceView implements SurfaceHol
 
         }
 
-        private void onCreate()
-        {
-            if(isCreate && wleglSurfaceViewWeakReference.get().wlGLRender != null)
-            {
+        private void onCreate() {
+            if (isCreate && wleglSurfaceViewWeakReference.get().wlGLRender != null) {
                 isCreate = false;
                 wleglSurfaceViewWeakReference.get().wlGLRender.onSurfaceCreated();
             }
         }
 
-        private void onChange(int width, int height)
-        {
-            if(isChange && wleglSurfaceViewWeakReference.get().wlGLRender != null)
-            {
+        private void onChange(int width, int height) {
+            if (isChange && wleglSurfaceViewWeakReference.get().wlGLRender != null) {
                 isChange = false;
                 wleglSurfaceViewWeakReference.get().wlGLRender.onSurfaceChanged(width, height);
             }
         }
 
-        private void onDraw()
-        {
-            if(wleglSurfaceViewWeakReference.get().wlGLRender != null && eglHelper != null)
-            {
+        private void onDraw() {
+            if (wleglSurfaceViewWeakReference.get().wlGLRender != null && eglHelper != null) {
                 wleglSurfaceViewWeakReference.get().wlGLRender.onDrawFrame();
-                if(!isStart)
-                {
+                if (!isStart) {
                     wleglSurfaceViewWeakReference.get().wlGLRender.onDrawFrame();
                 }
                 eglHelper.swapBuffers();
@@ -219,28 +197,22 @@ public abstract class WLEGLSurfaceView extends SurfaceView implements SurfaceHol
             }
         }
 
-        private void requestRender()
-        {
-            if(object != null)
-            {
-                synchronized (object)
-                {
+        private void requestRender() {
+            if (object != null) {
+                synchronized (object) {
                     object.notifyAll();
                 }
             }
         }
 
-        public void onDestory()
-        {
+        public void onDestory() {
             isExit = true;
             requestRender();
         }
 
 
-        public void release()
-        {
-            if(eglHelper != null)
-            {
+        public void release() {
+            if (eglHelper != null) {
                 eglHelper.destoryEgl();
                 eglHelper = null;
                 object = null;
@@ -248,10 +220,8 @@ public abstract class WLEGLSurfaceView extends SurfaceView implements SurfaceHol
             }
         }
 
-        public EGLContext getEglContext()
-        {
-            if(eglHelper != null)
-            {
+        public EGLContext getEglContext() {
+            if (eglHelper != null) {
                 return eglHelper.getmEglContext();
             }
             return null;
